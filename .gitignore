@@ -1,16 +1,8 @@
-# Python cache
 __pycache__/
-*.py[cod]
+*.pyc
 *.pyo
-
-# SQLite database
+*.pyd
 db.sqlite3
-
-# Environment
-.env
-venv/
-*.log
-
-# OS junk
-.DS_Store
-Thumbs.db
+*.env
+/media
+/staticfiles
