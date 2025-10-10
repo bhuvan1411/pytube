@@ -1,0 +1,13 @@
+{% extends "channels/base.html" %}
+
+{% block title %}{{ view.action|default:"Create" }} Channel{% endblock %}
+
+{% block content %}
+<h1>{{ view.action|default:"Create" }} Channel</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="{% url 'channels:list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
