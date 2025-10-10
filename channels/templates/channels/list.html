@@ -1,0 +1,30 @@
+{% extends "channels/base.html" %}
+
+{% block title %}Channels - List{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">All Channels</h1>
+
+{% if object_list %}
+    <ul class="list-group">
+        {% for channel in object_list %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="{% url 'channels:detail' channel.pk %}" class="fw-bold text-decoration-none">
+                        {{ channel.name }}
+                    </a><br>
+                    <small class="text-muted">{{ channel.description|truncatechars:100 }}</small>
+                </div>
+                {% if user == channel.owner %}
+                    <div>
+                        <a href="{% url 'channels:edit' channel.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'channels:delete' channel.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No channels found. <a href="{% url 'channels:create' %}">Create one?</a></p>
+{% endif %}
+{% endblock %}
