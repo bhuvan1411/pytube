@@ -44,18 +44,9 @@
             font-size: 26px;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.3s ease;
         }
         button:hover {
             background-color: #45a049;
-        }
-        .id a{
-            padding:5px 5px;
-            background-color: #45a049; 
-            color: white;
-            border-radius: 6px;
-            font-size: 26px;
-            font-weight: bold;
         }
         p {
             text-align: center;
@@ -65,11 +56,21 @@
             color: #4CAF50;
             text-decoration: none;
         }
-        a:hover {
+        #id a{
+            color: #0562c5;
+        }
+        #id a:hover{
             text-decoration: underline;
         }
-        .id a:hover{
-            text-decoration: none;
+        #end{
+           border: 1px solid #0562c5;
+           background: #0562c5;
+           padding: 15px 10px;
+           border-radius: 6px;
+        }
+        #end a{
+            color: white;
+            font-size: 20px;
         }
     </style>
 </head>
@@ -79,8 +80,10 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Log in</button>    
-        <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register</a></p>
-        <p class="id"><a href="{% url 'accounts:logout' %}">Logout</a></p>
+        <!-- <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register</a></p> -->
+        <p id="id"><a href="{% url 'accounts:forgot_password' %}">Forgot Password?</a></p>
+        <br>
+        <p id="end"><a href="{% url 'accounts:register' %}">Create new account</a></p>
     </form>
 </body>
 </html>
