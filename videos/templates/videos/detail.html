@@ -1,0 +1,79 @@
+{% extends 'channels/base.html' %}
+
+{% block title %}{{ video.title }} - {{ video.channel.name }}{% endblock %}
+
+{% block content %}
+<div style="max-width:800px; margin:auto; background:white; padding:25px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+    
+    <h2 style="color:#007BFF; margin-bottom:10px;">{{ video.title }}</h2>
+    
+    <p style="font-size:14px; color:#777;">
+        <strong>Channel:</strong> {{ video.channel.name }}<br>
+        <strong>Order:</strong> {{ video.order }}<br>
+        <strong>Uploaded:</strong> {{ video.uploaded_at|date:"F d, Y H:i" }}
+    </p>
+    
+    {% with video.youtube_url as url %}
+    {% if "watch?v=" in url %}
+        {% with url|cut:"https://www.youtube.com/watch?v=" as video_id %}
+            <iframe width="100%" height="400"
+                src="https://www.youtube.com/embed/{{ video_id }}"
+                frameborder="0" allowfullscreen>
+            </iframe>
+        {% endwith %}
+    {% elif "youtu.be/" in url %}
+        {% with url|cut:"https://youtu.be/" as video_id %}
+            <iframe width="100%" height="400"
+                src="https://www.youtube.com/embed/{{ video_id }}"
+                frameborder="0" allowfullscreen>
+            </iframe>
+        {% endwith %}
+    {% else %}
+        <iframe width="100%" height="400"
+            src="{{ url }}" frameborder="0" allowfullscreen>
+        </iframe>
+    {% endif %}
+{% endwith %}
+
+    
+    <h3>Description:</h3>
+    <p style="line-height:1.5; color:#333;">{{ video.description|linebreaks }}</p>
+
+    <!-- Navigation -->
+    <div style="margin-top:20px; display:flex; justify-content:space-between;">
+        {% if previous_video %}
+            <a href="{% url 'videos:video_detail' previous_video.id %}" class="btn" style="background:#6c757d;">⬅ Previous</a>
+        {% else %}
+            <span></span>
+        {% endif %}
+
+        {% if next_video %}
+            <a href="{% url 'videos:video_detail' next_video.id %}" class="btn" style="background:#28a745;">Next ➡</a>
+        {% else %}
+            <span></span>
+        {% endif %}
+    </div>
+
+    <div style="margin-top:15px;">
+        <a href="{% url 'videos:video_list' video.channel.id %}" class="btn" style="background:gray;">⬅ Back to Videos</a>
+    </div>
+
+</div>
+
+<style>
+    .btn {
+        display: inline-block;
+        padding: 8px 15px;
+        border-radius:5px;
+        text-decoration:none;
+        color:white;
+        font-weight:bold;
+        margin-top:10px;
+    }
+    .btn:hover {
+        opacity:0.9;
+        transform:translateY(-2px);
+        transition:0.2s;
+    }
+</style>
+{% endblock %}

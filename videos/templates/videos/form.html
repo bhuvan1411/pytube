@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="form-container">
+    <h2 style="text-align:center; margin-bottom:20px;">{% if video %}Edit Video{% else %}Add New Video{% endif %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label>Title</label>
+        {{ form.title }}
+        <label>YouTube URL</label>
+        {{ form.youtube_url }}
+        <label>Order</label>
+        {{ form.order }}
+        <label>Description</label>
+        {{ form.description }}
+        <label>Thumbnail URL</label>
+        {{ form.thumbnail_url }}
+
+        <button type="submit" class="btn" style="margin-top:10px;">Save</button>
+        <a href="{% if video %}{% url 'videos:video_detail' video.id %}{% else %}{% url 'videos:video_list' channel.id %}{% endif %}" class="btn" style="background:gray;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

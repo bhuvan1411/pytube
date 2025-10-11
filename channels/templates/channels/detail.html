@@ -3,15 +3,43 @@
 {% block title %}{{ object.name }} - Channel{% endblock %}
 
 {% block content %}
-<h1>{{ object.name }}</h1>
-<p>{{ object.description }}</p>
-<p><strong>Owner:</strong> {{ object.owner.username }}</p>
-<p><strong>Created:</strong> {{ object.created_at|date:"Y-m-d H:i" }}</p>
+<div style="max-width:800px; margin:auto; background:white; padding:25px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+    
+    <h1 style="color:#007BFF; margin-bottom:10px;">{{ object.name }}</h1>
+    
+    <p style="color:#555; line-height:1.5;">{{ object.description|linebreaks }}</p>
+    
+    <p style="font-size:14px; color:#777; margin:5px 0;">
+        <strong>Owner:</strong> {{ object.owner.username }}<br>
+        <strong>Created:</strong> {{ object.created_at|date:"F d, Y H:i" }}<br>
+        <strong>Total Videos:</strong> {{ object.videos.count }}
+    </p>
+    
+    <div style="margin-top:20px;">
+        {% if user == object.owner %}
+            <a href="{% url 'channels:update' object.id %}" class="btn" style="background:orange; margin-right:10px;">✏ Edit</a>
+            <a href="{% url 'channels:delete' object.id %}" class="btn" style="background:red; margin-right:10px;">🗑 Delete</a>
+        {% endif %}
+        <a href="{% url 'videos:video_list' object.id %}" class="btn" style="background:#28a745;">🎬 See All Videos</a>
+        <a href="{% url 'channels:list' %}" class="btn" style="background:gray;">⬅ Back to List</a>
+    </div>
 
-{% if user == object.owner %}
-    <a href="{% url 'channels:update' channel.id %}" class="btn btn-primary">Edit</a>
-    <a href="{% url 'channels:delete' channel.id %}" class="btn btn-danger">Delete</a>
-{% endif %}
+</div>
 
-<a href="{% url 'channels:list' %}" class="btn btn-secondary mt-3">Back to List</a>
+<style>
+    .btn {
+        display: inline-block;
+        padding: 8px 15px;
+        border-radius:5px;
+        text-decoration:none;
+        color:white;
+        font-weight:bold;
+        margin-top:10px;
+    }
+    .btn:hover {
+        opacity:0.9;
+        transform:translateY(-2px);
+        transition:0.2s;
+    }
+</style>
 {% endblock %}
