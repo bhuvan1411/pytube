@@ -5,8 +5,8 @@ app_name = 'channels'
 
 urlpatterns = [
     path('', views.ChannelListView.as_view(), name='list'),
-    path('<int:pk>/', views.ChannelDetailView.as_view(), name='detail'),
     path('create/', views.ChannelCreateView.as_view(), name='create'),
-    path('<int:pk>/edit/', views.ChannelUpdateView.as_view(), name='edit'),
+    path('<int:pk>/', views.ChannelDetailView.as_view(), name='detail'),
+    path('<int:pk>/edit/', views.ChannelUpdateView.as_view(), name='update'),
     path('<int:pk>/delete/', views.ChannelDeleteView.as_view(), name='delete'),
 ]

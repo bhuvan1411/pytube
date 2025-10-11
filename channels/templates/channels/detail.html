@@ -9,8 +9,8 @@
 <p><strong>Created:</strong> {{ object.created_at|date:"Y-m-d H:i" }}</p>
 
 {% if user == object.owner %}
-    <a href="{% url 'channels:edit' object.pk %}" class="btn btn-primary">Edit</a>
-    <a href="{% url 'channels:delete' object.pk %}" class="btn btn-danger">Delete</a>
+    <a href="{% url 'channels:update' channel.id %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'channels:delete' channel.id %}" class="btn btn-danger">Delete</a>
 {% endif %}
 
 <a href="{% url 'channels:list' %}" class="btn btn-secondary mt-3">Back to List</a>

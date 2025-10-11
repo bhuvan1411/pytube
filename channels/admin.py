@@ -3,5 +3,4 @@ from .models import Channel
 
 @admin.register(Channel)
 class ChannelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'owner', 'created_at')
-    search_fields = ('name', 'owner__username')
+    list_display = ('id', 'name', 'owner', 'created_at')  # include created_at
