@@ -32,8 +32,3 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Allow only specific files/folders to be pushed
-!videos/
-!channels/templates/channels/detail.html
-!pytube/settings.py
-!pytube/urls.py
