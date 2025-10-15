@@ -1,45 +1,83 @@
-{% extends "channels/base.html" %}
+{% extends 'channels/base.html' %}
+{% load dict_filters %}
 
-{% block title %}{{ object.name }} - Channel{% endblock %}
+{% block title %}{{ channel.name }}{% endblock %}
 
 {% block content %}
-<div style="max-width:800px; margin:auto; background:white; padding:25px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
-    
-    <h1 style="color:#007BFF; margin-bottom:10px;">{{ object.name }}</h1>
-    
-    <p style="color:#555; line-height:1.5;">{{ object.description|linebreaks }}</p>
-    
-    <p style="font-size:14px; color:#777; margin:5px 0;">
-        <strong>Owner:</strong> {{ object.owner.username }}<br>
-        <strong>Created:</strong> {{ object.created_at|date:"F d, Y H:i" }}<br>
-        <strong>Total Videos:</strong> {{ object.videos.count }}
-    </p>
-    
-    <div style="margin-top:20px;">
-        {% if user == object.owner %}
-            <a href="{% url 'channels:update' object.id %}" class="btn" style="background:orange; margin-right:10px;">✏ Edit</a>
-            <a href="{% url 'channels:delete' object.id %}" class="btn" style="background:red; margin-right:10px;">🗑 Delete</a>
-        {% endif %}
-        <a href="{% url 'videos:video_list' object.id %}" class="btn" style="background:#28a745;">🎬 See All Videos</a>
-        <a href="{% url 'channels:list' %}" class="btn" style="background:gray;">⬅ Back to List</a>
+<div style="max-width:900px; margin:auto;">
+
+    <h2>{{ channel.name }}</h2>
+    <p>{{ channel.description }}</p>
+
+    {% if user.is_authenticated %}
+    <!-- Progress Bar -->
+    <div style="margin:20px 0;">
+        <strong>Course Progress:</strong> {{ completed_videos }}/{{ total_videos }} completed ({{ progress_percent }}%)
+        <div style="background:#eee; border-radius:10px; height:20px; width:100%; margin-top:5px;">
+            <div style="width:{{ progress_percent }}%; background:#28a745; height:100%; border-radius:10px;"></div>
+        </div>
     </div>
+
+    <!-- Continue Button -->
+    {% if first_incomplete %}
+        <a href="{% url 'videos:video_detail' first_incomplete.id %}" class="btn" style="background:#007BFF; margin-bottom:15px;">
+            ▶ Continue Course
+        </a>
+    {% else %}
+        <p style="color:green;">🎉 You have completed this course!</p>
+    {% endif %}
+    {% else %}
+        <p><a href="{% url 'accounts:login' %}">Login</a> to track your course progress.</p>
+    {% endif %}
+
+    <!-- Add Video (Owner Only) -->
+    {% if user == channel.owner %}
+        <a href="{% url 'videos:video_create' channel.id %}" class="btn btn-success" style="margin-bottom:20px;">
+            ➕ Add New Video
+        </a>
+    {% endif %}
+
+    <!-- Videos List -->
+    <ul style="list-style:none; padding:0;">
+    {% for video in videos %}
+        <li style="margin-bottom:10px; padding:10px; background:#f9f9f9; border-radius:5px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                {{ video.order }}. <a href="{% url 'videos:video_detail' video.id %}">{{ video.title }}</a>
+                {% if user.is_authenticated %}
+                    {% with progress_dict|dict_get:video.id as prog %}
+                        {% if prog and prog.watched_percentage >= 95 %}
+                            <span style="color:green; font-weight:bold;">✔ Completed</span>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+            </div>
+            {% if user == channel.owner %}
+            <div>
+                <a href="{% url 'videos:video_edit' video.id %}" class="btn" style="background:orange;">✏ Edit</a>
+                <a href="{% url 'videos:video_delete' video.id %}" class="btn" style="background:red;">🗑 Delete</a>
+            </div>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
 
 </div>
 
 <style>
-    .btn {
-        display: inline-block;
-        padding: 8px 15px;
-        border-radius:5px;
-        text-decoration:none;
-        color:white;
-        font-weight:bold;
-        margin-top:10px;
-    }
-    .btn:hover {
-        opacity:0.9;
-        transform:translateY(-2px);
-        transition:0.2s;
-    }
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius:5px;
+    text-decoration:none;
+    color:white;
+    font-weight:bold;
+    font-size:14px;
+    margin-right:5px;
+}
+.btn:hover { 
+    opacity:0.9; 
+    transform:translateY(-2px); 
+    transition:0.2s; 
+}
 </style>
 {% endblock %}

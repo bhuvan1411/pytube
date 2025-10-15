@@ -7,6 +7,15 @@ __pycache__/
 
 # SQLite database
 db.sqlite3
+env/
+
+# Ignore Django migration cache
+*.log
+*.sqlite3
+*.migrations/
+
+# Ignore OS/system files
+.DS_Store
 
 # Environment files
 *.env
@@ -22,3 +31,9 @@ venv/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Allow only specific files/folders to be pushed
+!videos/
+!channels/templates/channels/detail.html
+!pytube/settings.py
+!pytube/urls.py

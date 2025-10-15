@@ -1,79 +1,145 @@
 {% extends 'channels/base.html' %}
-
 {% block title %}{{ video.title }} - {{ video.channel.name }}{% endblock %}
 
 {% block content %}
-<div style="max-width:800px; margin:auto; background:white; padding:25px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
-    
-    <h2 style="color:#007BFF; margin-bottom:10px;">{{ video.title }}</h2>
-    
-    <p style="font-size:14px; color:#777;">
-        <strong>Channel:</strong> {{ video.channel.name }}<br>
-        <strong>Order:</strong> {{ video.order }}<br>
-        <strong>Uploaded:</strong> {{ video.uploaded_at|date:"F d, Y H:i" }}
-    </p>
-    
-    {% with video.youtube_url as url %}
-    {% if "watch?v=" in url %}
-        {% with url|cut:"https://www.youtube.com/watch?v=" as video_id %}
-            <iframe width="100%" height="400"
-                src="https://www.youtube.com/embed/{{ video_id }}"
-                frameborder="0" allowfullscreen>
-            </iframe>
-        {% endwith %}
-    {% elif "youtu.be/" in url %}
-        {% with url|cut:"https://youtu.be/" as video_id %}
-            <iframe width="100%" height="400"
-                src="https://www.youtube.com/embed/{{ video_id }}"
-                frameborder="0" allowfullscreen>
-            </iframe>
-        {% endwith %}
-    {% else %}
-        <iframe width="100%" height="400"
-            src="{{ url }}" frameborder="0" allowfullscreen>
-        </iframe>
-    {% endif %}
-{% endwith %}
+<div style="display:flex; gap:20px; max-width:1200px; margin:auto;">
+    <!-- Left: Video Player -->
+    <div style="flex:3; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+        <h2>{{ video.title }}</h2>
 
-    
-    <h3>Description:</h3>
-    <p style="line-height:1.5; color:#333;">{{ video.description|linebreaks }}</p>
-
-    <!-- Navigation -->
-    <div style="margin-top:20px; display:flex; justify-content:space-between;">
-        {% if previous_video %}
-            <a href="{% url 'videos:video_detail' previous_video.id %}" class="btn" style="background:#6c757d;">⬅ Previous</a>
+        <!-- ✅ Embed YouTube player with ID -->
+        {% with video.youtube_url as url %}
+        {% if "watch?v=" in url %}
+            {% with url|cut:"https://www.youtube.com/watch?v=" as video_id %}
+                <iframe id="player" width="100%" height="400"
+                        src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&start={{ progress.current_time|default:0 }}"
+                        frameborder="0" allowfullscreen></iframe>
+            {% endwith %}
+        {% elif "youtu.be/" in url %}
+            {% with url|cut:"https://youtu.be/" as video_id %}
+                <iframe id="player" width="100%" height="400"
+                        src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&start={{ progress.current_time|default:0 }}"
+                        frameborder="0" allowfullscreen></iframe>
+            {% endwith %}
         {% else %}
-            <span></span>
+            <iframe id="player" width="100%" height="400"
+                    src="{{ url }}?enablejsapi=1&start={{ progress.current_time|default:0 }}"
+                    frameborder="0" allowfullscreen></iframe>
         {% endif %}
+        {% endwith %}
 
-        {% if next_video %}
-            <a href="{% url 'videos:video_detail' next_video.id %}" class="btn" style="background:#28a745;">Next ➡</a>
-        {% else %}
-            <span></span>
-        {% endif %}
+        <p>{{ video.description|linebreaks }}</p>
+
+        <div style="display:flex; justify-content:space-between; margin-top:20px;">
+            {% if previous_video %}
+                <a href="{% url 'videos:video_detail' previous_video.id %}" class="btn" style="background:#6c757d;">⬅ Previous</a>
+            {% endif %}
+            {% if next_video %}
+                <a href="{% url 'videos:video_detail' next_video.id %}" class="btn" style="background:#28a745;">Next ➡</a>
+            {% endif %}
+        </div>
+
+        <a href="{% url 'videos:video_list' video.channel.id %}" class="btn" style="background:gray; margin-top:10px;">⬅ Back to Videos</a>
+
+        <!-- Progress display -->
+        <div id="progress-display" style="margin-top:10px; font-weight:bold; color:#007BFF;">Progress: 0%</div>
     </div>
 
-    <div style="margin-top:15px;">
-        <a href="{% url 'videos:video_list' video.channel.id %}" class="btn" style="background:gray;">⬅ Back to Videos</a>
+    <!-- Right: Playlist -->
+    <div style="flex:1; max-height:600px; overflow-y:auto;">
+        <h3>Playlist</h3>
+        <ul style="list-style:none; padding:0;">
+        {% for v in videos %}
+            <li style="margin-bottom:5px; padding:5px; border-bottom:1px solid #ddd;">
+                <a href="{% url 'videos:video_detail' v.id %}">{{ v.order }}. {{ v.title }}</a>
+            </li>
+        {% endfor %}
+        </ul>
     </div>
-
 </div>
 
 <style>
-    .btn {
-        display: inline-block;
-        padding: 8px 15px;
-        border-radius:5px;
-        text-decoration:none;
-        color:white;
-        font-weight:bold;
-        margin-top:10px;
-    }
-    .btn:hover {
-        opacity:0.9;
-        transform:translateY(-2px);
-        transition:0.2s;
-    }
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius:5px;
+    text-decoration:none;
+    color:white;
+    font-weight:bold;
+    font-size:14px;
+    margin-right:5px;
+}
+.btn:hover { opacity:0.9; transform:translateY(-2px); transition:0.2s; }
 </style>
+
+<!-- ✅ YouTube IFrame API Script -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+    let player;
+    let updateInterval;
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            events: { 'onStateChange': onPlayerStateChange }
+        });
+    }
+
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING) {
+            if (!updateInterval) {
+                updateInterval = setInterval(updateProgress, 5000); // every 5 seconds
+            }
+        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+            updateProgress(); // save immediately
+            clearInterval(updateInterval);
+            updateInterval = null;
+        }
+    }
+
+    function updateProgress() {
+        if (!player || !player.getDuration) return;
+        const duration = player.getDuration();
+        if (duration === 0) return;
+
+        const currentTime = player.getCurrentTime();
+        const watched_percentage = (currentTime / duration) * 100;
+
+        // Update on screen
+        document.getElementById('progress-display').innerText =
+            "Progress: " + watched_percentage.toFixed(1) + "%";
+
+        // Send to backend
+        fetch("{% url 'videos:save_progress' video.id %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify({
+                current_time: currentTime,
+                watched_percentage: watched_percentage
+            })
+        });
+    }
+
+    // Get CSRF Token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Save before leaving the page
+    window.addEventListener("beforeunload", updateProgress);
+</script>
 {% endblock %}

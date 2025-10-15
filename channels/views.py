@@ -6,6 +6,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 from .models import Channel
+from videos.models import VideoProgress
+
 
 # -------------------------
 # Create Channel
@@ -36,6 +38,44 @@ class ChannelDetailView(DetailView):
     model = Channel
     template_name = 'channels/detail.html'
     context_object_name = 'channel'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        channel = self.object
+        videos = channel.videos.all().order_by('order')
+        context['videos'] = videos
+
+        progress_dict = {}
+        completed_count = 0
+        first_incomplete = None
+
+        # Only query VideoProgress if user is authenticated
+        if self.request.user.is_authenticated:
+            for video in videos:
+                try:
+                    prog = VideoProgress.objects.get(user=self.request.user, video=video)
+                    progress_dict[video.id] = prog
+                    if prog.watched_percentage >= 95:
+                        completed_count += 1
+                    if not first_incomplete and prog.watched_percentage < 95:
+                        first_incomplete = video
+                except VideoProgress.DoesNotExist:
+                    progress_dict[video.id] = None
+                    if not first_incomplete:
+                        first_incomplete = video
+        else:
+            # For anonymous users
+            for video in videos:
+                progress_dict[video.id] = None
+
+        context['progress_dict'] = progress_dict
+        context['completed_videos'] = completed_count
+        context['total_videos'] = videos.count()
+        context['progress_percent'] = int((completed_count / videos.count()) * 100) if videos.exists() else 0
+        context['first_incomplete'] = first_incomplete
+
+        return context
+    
 
 # -------------------------
 # Update Channel
