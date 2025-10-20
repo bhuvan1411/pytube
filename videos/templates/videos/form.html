@@ -30,6 +30,11 @@
         </div>
 
         <div class="mb-3">
+            <label for="id_duration" class="form-label fw-bold">Duration</label>
+            {{ form.duration|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
             <label for="id_thumbnail_url" class="form-label fw-bold">Thumbnail URL</label>
             {{ form.thumbnail_url|add_class:"form-control" }}
         </div>

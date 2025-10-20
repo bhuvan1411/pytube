@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Pytube Home{% endblock %}</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -32,6 +33,9 @@
             color: #ffffff !important;
         }
 
+        .navbar-logo {
+            height: 50px;
+        }
         .nav-link {
             color: #e2e8f0 !important;
             transition: color 0.3s ease;
@@ -70,7 +74,8 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="{% url 'home:home' %}">🎬 PyTube</a>
+
+                <a  class="navbar-brand" href="{% url 'home:home' %}"><img src="{% static 'images/logo.png' %}" alt="PyTube Logo" class="navbar-logo" ">PyTube</a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
@@ -79,9 +84,9 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" href="{% url 'channels:list' %}">All Channels</a></li>
-                        {% if user.is_authenticated %}
+                        {% comment %} {% if user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'channels:create' %}">Create Channel</a></li>
-                        {% endif %}
+                        {% endif %} {% endcomment %}
                     </ul>
 
                     <ul class="navbar-nav ms-auto align-items-center">
