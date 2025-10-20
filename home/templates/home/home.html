@@ -1,0 +1,457 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyTube | Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* CSS variables for theme */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --nav-bg: rgba(30, 41, 59, 0.7);
+            --footer-bg: #1e293b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --text-muted: #94a3b8;
+            --card-bg: #1e293b;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar {
+            background: rgba(30, 41, 59, 0.5) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.15) !important;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            box-shadow: 0 4px 24px rgba(30,41,59,0.07);
+        }
+
+        .navbar.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        .navbar.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .navbar-brand {
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: #e2e8f0 !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #3b82f6 !important;
+        }
+
+        footer {
+            background: #1e293b;
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* Banner styling */
+        .banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%), 
+                        url('https://images.unsplash.com/photo-1484417894907-623942c8ee29?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHB5dGhvbiUyMHByb2dyYW1taW5nfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=600') no-repeat center center;
+            background-size: cover;
+            color: #ffffff;
+            padding: 180px 0 120px 0;
+            margin-top: 56px;
+            min-height: calc(100vh - 56px);
+        }
+
+        .banner-content {
+            text-align: left;
+        }
+
+        .banner-content h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .banner-content p {
+            font-size: 1.5rem;
+            color: #e2e8f0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border: none;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+        }
+
+        .btn-outline-light {
+            border-color: #3b82f6;
+            color: #e2e8f0;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #3b82f6;
+            color: #ffffff;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: #94a3b8;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+            color: #3b82f6;
+        }
+
+        /* Live search dropdown */
+        #search-results {
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.5rem;
+        }
+
+        .list-group-item {
+            background-color: rgba(30, 41, 59, 0.8) !important;
+            color: #e2e8f0 !important;
+            border-color: rgba(59, 130, 246, 0.2) !important;
+        }
+
+        .list-group-item:hover {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+            color: #ffffff !important;
+        }
+
+        .form-control {
+            background-color: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #e2e8f0;
+        }
+
+        .form-control:focus {
+            background-color: rgba(30, 41, 59, 0.8);
+            border-color: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+        }
+
+        /* Feature Highlights */
+        .container.my-5 h4 {
+            color: #3b82f6;
+        }
+
+        .container.my-5 p {
+            color: #94a3b8;
+        }
+
+        footer h5 {
+            color: #3b82f6;
+        }
+
+        footer p {
+            color: #94a3b8;
+        }
+
+        #search-input::placeholder {
+            color: gray;
+            opacity: 1; /* Ensure full opacity in all browsers */
+        }
+
+        /* Optional: input text color also white */
+        #search-input {
+            color: gray;
+        }
+    </style>
+</head>
+<body class="bg-dark">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <!-- Brand (left side) -->
+    <a class="navbar-brand" href="{% url 'home:home' %}">🎬 PyTube</a>
+
+    <!-- Mobile toggle -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar content -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <!-- Channels link -->
+        <li class="nav-item me-3">
+          <a class="nav-link" href="{% url 'channels:list' %}">Channels</a>
+        </li>
+
+        <!-- Search form -->
+        <form id="search-form" class="d-flex me-3 position-relative" method="get" action="{% url 'home:search' %}">
+        <input name="q" id="search-input" class="form-control me-2" type="search" placeholder="Search for knowledge…" autocomplete="off">
+        <button class="btn btn-outline-light" type="submit">Search</button>
+        <div id="search-results" class="list-group position-absolute w-100 mt-5 shadow" style="z-index: 2000; display: none;"></div>
+        </form>
+
+
+
+        <!-- Auth Buttons -->
+        {% if user.is_authenticated %}
+          <li class="nav-item d-flex align-items-center ms-2">
+            <span class="navbar-text text-light me-2">Hi, {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item me-2">
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">Login</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">Register</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+    <!-- Banner -->
+    <div class="banner d-flex align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 banner-content">
+                    <h1>"Knowledge is power, learning is the key."</h1>
+                    <p>Unlock your potential with curated channels and videos.</p>
+                    <a href="{% url 'channels:list' %}" class="btn btn-primary btn-lg mt-3">Start Learning</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Highlights -->
+    <div id="channelsCarousel" class="carousel slide mt-5" data-bs-ride="carousel">
+  <div class="carousel-inner">
+
+    <!-- First channel card -->
+    <div class="carousel-item active">
+      <div class="card text-center bg-dark text-light mx-auto" style="width: 18rem;">
+        <img src="https://via.placeholder.com/300x150.png?text=Channel+1" class="card-img-top" alt="Channel 1">
+        <div class="card-body">
+          <h5 class="card-title">Channel 1</h5>
+          <p class="card-text">Discover content tailored to your interests.</p>
+          <a href="#" class="btn btn-primary">Visit Channel</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second channel card -->
+    <div class="carousel-item">
+      <div class="card text-center bg-dark text-light mx-auto" style="width: 18rem;">
+        <img src="https://via.placeholder.com/300x150.png?text=Channel+2" class="card-img-top" alt="Channel 2">
+        <div class="card-body">
+          <h5 class="card-title">Channel 2</h5>
+          <p class="card-text">Learn something new every day.</p>
+          <a href="#" class="btn btn-primary">Visit Channel</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Third channel card -->
+    <div class="carousel-item">
+      <div class="card text-center bg-dark text-light mx-auto" style="width: 18rem;">
+        <img src="https://via.placeholder.com/300x150.png?text=Channel+3" class="card-img-top" alt="Channel 3">
+        <div class="card-body">
+          <h5 class="card-title">Channel 3</h5>
+          <p class="card-text">Access curated content anytime and anywhere.</p>
+          <a href="#" class="btn btn-primary">Visit Channel</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Carousel controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#channelsCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#channelsCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+    <!-- Footer -->
+    <footer class="text-light pt-5 pb-3 mt-5">
+        <div class="container">
+            <div class="row">
+
+                <!-- Quick Links -->
+                <div class="col-md-4 mb-3 footer-links">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home:home' %}">Home</a></li>
+                        <li><a href="{% url 'channels:list' %}">Channels</a></li>
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'accounts:register' %}">Register</a></li>
+                    </ul>
+                </div>
+
+                <!-- About -->
+                <div class="col-md-4 mb-3">
+                    <h5>About PyTube</h5>
+                    <p>PyTube is your hub for learning and exploring videos from curated channels. Track your progress and unlock your potential!</p>
+                </div>
+
+                <!-- Social Media -->
+                <div class="col-md-4 mb-3 footer-links">
+                    <h5>Follow Us</h5>
+                    <a href="#" class="text-light me-3"><i class="bi bi-facebook"></i> Facebook</a><br>
+                    <a href="#" class="text-light me-3"><i class="bi bi-twitter"></i> Twitter</a><br>
+                    <a href="#" class="text-light me-3"><i class="bi bi-instagram"></i> Instagram</a>
+                </div>
+
+            </div>
+
+            <div class="text-center mt-3">
+                <p class="mb-0" style="color: #94a3b8;">© 2025 PyTube Project</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Live Search JS -->
+    <script>
+        const input = document.getElementById('search-input');
+        const resultsContainer = document.getElementById('search-results');
+
+        input.addEventListener('keyup', function() {
+            const query = input.value.trim();
+            if (query.length < 2) {
+                resultsContainer.style.display = 'none';
+                resultsContainer.innerHTML = '';
+                return;
+            }
+
+            fetch(`/videos/ajax_search/?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    resultsContainer.innerHTML = '';
+                    if (data.results.length > 0) {
+                        data.results.forEach(video => {
+                            const li = document.createElement('li');
+                            li.classList.add('list-group-item', 'list-group-item-action');
+                            li.innerHTML = `
+                                <img src="${video.thumbnail}" style="width: 50px; height: 30px; object-fit: cover;" class="me-2">
+                                ${video.title}
+                            `;
+                            li.addEventListener('click', () => {
+                                window.location.href = `/videos/detail/${video.id}/`;
+                            });
+                            resultsContainer.appendChild(li);
+                        });
+                        resultsContainer.style.display = 'block';
+                    } else {
+                        resultsContainer.style.display = 'none';
+                    }
+                });
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!input.contains(event.target)) {
+                resultsContainer.style.display = 'none';
+            }
+        });
+    </script>
+
+    <!-- Navbar Hide on Scroll & Show on Hover JS -->
+    <script>
+        let lastScroll = 0;
+        const navbar = document.querySelector('.navbar');
+        let hideTimeout;
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll <= 0) {
+                navbar.classList.remove('hidden');
+                navbar.classList.add('visible');
+                return;
+            }
+            
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                // Scrolling down
+                navbar.classList.add('hidden');
+                navbar.classList.remove('visible');
+            } else {
+                // Scrolling up
+                navbar.classList.remove('hidden');
+                navbar.classList.add('visible');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // Show navbar on mouse movement near top
+        document.addEventListener('mousemove', (e) => {
+            if (e.clientY < 100 && window.pageYOffset > 100) {
+                navbar.classList.remove('hidden');
+                navbar.classList.add('visible');
+                
+                // Hide again after 3 seconds of no movement
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    if (window.pageYOffset > 100) {
+                        navbar.classList.add('hidden');
+                        navbar.classList.remove('visible');
+                    }
+                }, 3000);
+            }
+        });
+
+        // Keep navbar visible when hovering over it
+        navbar.addEventListener('mouseenter', () => {
+            clearTimeout(hideTimeout);
+            navbar.classList.remove('hidden');
+            navbar.classList.add('visible');
+        });
+
+        navbar.addEventListener('mouseleave', () => {
+            if (window.pageYOffset > 100) {
+                hideTimeout = setTimeout(() => {
+                    navbar.classList.add('hidden');
+                    navbar.classList.remove('visible');
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

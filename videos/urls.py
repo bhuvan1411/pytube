@@ -10,4 +10,5 @@ urlpatterns = [
     path('<int:video_id>/edit/', views.video_edit, name='video_edit'),
     path('<int:video_id>/delete/', views.video_delete, name='video_delete'),
     path('save_progress/<int:video_id>/', views.save_progress, name='save_progress'),
+    path('ajax_search/', views.ajax_video_search, name='ajax_search'),
 ]

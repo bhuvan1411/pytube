@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+  <h3>Search results for "{{ query }}"</h3>
+  <hr>
+
+  {% if results %}
+    <div class="row">
+      {% for video in results %}
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm">
+            {% if video.thumbnail_url %}
+              <img src="{{ video.thumbnail_url }}" class="card-img-top" alt="{{ video.title }}">
+            {% else %}
+              <img src="https://via.placeholder.com/300x200?text=No+Thumbnail" class="card-img-top">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ video.title }}</h5>
+              <p class="card-text">{{ video.description|truncatewords:20 }}</p>
+              <a href="{% url 'videos:video_detail' video.id %}" class="btn btn-primary btn-sm">Watch</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No results found.</p>
+  {% endif %}
+</div>
+{% endblock %}

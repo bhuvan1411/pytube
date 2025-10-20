@@ -10,6 +10,7 @@ class Video(models.Model):
     description = models.TextField(blank=True)
     thumbnail_url = models.URLField(blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    duration=models.FloatField(default=0.0, help_text="Video duration in seconds")
 
     class Meta:
         ordering = ['order']

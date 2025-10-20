@@ -24,16 +24,40 @@
 {% endif %}
 
 <style>
+    /* Subtle hover animation for list items */
+    .list-group-item {
+        background-color: rgba(30, 41, 59, 0.8);
+        color: #e2e8f0;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        transition: all 0.3s ease;
+    }
+
     .list-group-item:hover {
         transform: scale(1.03);
-        box-shadow:0 4px 15px rgba(0,0,0,0.2);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+        background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2));
+        border-color: rgba(139, 92, 246, 0.4);
     }
+
+    /* Modern glowing gradient button */
     .btn {
-        padding: 8px 15px;
-        border-radius:5px;
-        text-decoration:none;
-        color:white;
-        font-weight:bold;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+        text-decoration: none;
+        color: #ffffff;
     }
 </style>
+
 {% endblock %}

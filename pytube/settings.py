@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'accounts',
     'channels',
     'videos',
+    'home',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -125,7 +127,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'accounts:login'
-LOGIN_REDIRECT_URL = 'channels:list'
-LOGOUT_REDIRECT_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'home:home'
+LOGOUT_REDIRECT_URL = 'home:home'
+
+
 
